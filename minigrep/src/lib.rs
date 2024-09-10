@@ -26,7 +26,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(mut args: env::Args) -> Result<Self, &'static str> {
+    pub fn build(mut args: env::Args) -> Result<Self, &'static str> {
         if args.len() < 4 {
             return Err("Not enough arguments");
         }
@@ -35,8 +35,8 @@ impl Config {
         let query = next_arg(&mut args, "Could not get query")?;
         let file_name = next_arg(&mut args, "Could not get file name")?;
         let case_sensitive = next_arg(&mut args, "Could not find case flag")?;
-        let case_sensitive =
-            bool::from_str(case_sensitive.as_str()).map_err(|_| "Failed to parse bool")?;
+        let case_sensitive = bool::from_str(case_sensitive.as_str())
+            .map_err(|_| "Failed to parse bool")?;
 
         Ok(Self {
             query,
@@ -61,7 +61,10 @@ pub fn search_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
         .collect()
 }
 
-fn next_arg(args: &mut env::Args, err_msg: &'static str) -> Result<String, &'static str> {
+fn next_arg(
+    args: &mut env::Args,
+    err_msg: &'static str,
+) -> Result<String, &'static str> {
     match args.next() {
         Some(arg) => Ok(arg),
         None => Err(err_msg),
